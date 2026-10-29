@@ -15,7 +15,7 @@ for folder = 1:2
     for mice = 1:length(list)/2
         for k = 2*mice-1:2*mice
             load(list{k});
-            % 全体（stage_all_sessions_lick_rt.m と同じ）
+            % All trials (same as stage_all_sessions_lick_rt.m)
             lick_plot = [];
             for i = 1:size(trial_start,2)
                 temp_lick = lick(lick>trial_start(i) & lick<trial_end(i));
@@ -24,23 +24,23 @@ for folder = 1:2
                 end
             end
 
-            % 各trialのrtを求める
+            % Reaction time of each trial
             lick_plot2 = lick_plot(lick_plot(:,2)>0,:);
             rt = zeros(1,size(trial_start,2));
             for i = 1:size(trial_start,2)
                 rt_ind = find(lick_plot2(:,1)==i,1);
-                rt(i) = min([lick_plot2(rt_ind,2),0.95*sampling_rate]); % 刺激提示後0.95s以内になめなかった場合は0.95sとする
+                rt(i) = min([lick_plot2(rt_ind,2),0.95*sampling_rate]); % If no lick occurred within 0.95 s after stimulus onset, set the time to 0.95 s
             end
             rt = rt/sampling_rate;
 
-            % 最初の200 trial（stage_all_sessions_accuracy_phase.m と同じ切り方）
+            % First 200 trials (same split as stage_all_sessions_accuracy_phase.m)
             rt_first = rt(1:200); TrueSide_first = TrueSide(1:200); SelfInitiated_first = SelfInitiated(1:200);
             temp_go = rt_first(rt_first<0.95 & TrueSide_first==0 & SelfInitiated_first==1);
             Go_rt_first(mice_num+mice,k-2*mice+2) = mean(temp_go);
             temp_nogo = rt_first(rt_first<0.95 & TrueSide_first==1 & SelfInitiated_first==1);
             NoGo_rt_first(mice_num+mice,k-2*mice+2) = mean(temp_nogo);
 
-            % 最後の200 trial
+            % Last 200 trials
             rt_last = rt(end-199:end); TrueSide_last = TrueSide(end-199:end); SelfInitiated_last = SelfInitiated(end-199:end);
             temp_go = rt_last(rt_last<0.95 & TrueSide_last==0 & SelfInitiated_last==1);
             Go_rt_last(mice_num+mice,k-2*mice+2) = mean(temp_go);
@@ -54,7 +54,7 @@ for folder = 1:2
 end
 
 %%%%%%%%%%
-% 最初の200 trialと最後の200 trialの first-lick latency（2セッション平均）
+% First-lick latency for the first 200 trials and the last 200 trials (mean of two sessions)
 reaction_time = [mean(Go_rt_first,2,"omitmissing") mean(Go_rt_last,2,"omitmissing") mean(NoGo_rt_first,2,"omitmissing") mean(NoGo_rt_last,2,"omitmissing")];
 data_lick = reaction_time(1:mice_num,:); data_stop = reaction_time(mice_num+1:end,:);
 
@@ -85,7 +85,7 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% early とlate とで差があるか
+% Test whether early and late differ
 p_lick_Go = signrank(data_lick(:,1), data_lick(:,2))
 p_lick_NoGo = signrank(data_lick(:,3), data_lick(:,4))
 
@@ -116,12 +116,12 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% early とlate とで差があるか
+% Test whether early and late differ
 p_stop_Go = signrank(data_stop(:,1), data_stop(:,2))
 p_stop_NoGo = signrank(data_stop(:,3), data_stop(:,4))
 
 %%%%%%%%%%
-% 最初の200 trialと最後の200 trialのreaction timeの差
+% Difference in reaction time between the first 200 trials and the last 200 trials
 diff_rt_Go = (Go_rt_last - Go_rt_first)./(Go_rt_last + Go_rt_first);
 diff_rt_NoGo = (NoGo_rt_last - NoGo_rt_first)./(NoGo_rt_last + NoGo_rt_first);
 data_lick = mean(diff_rt_Go(1:mice_num,:),2,"omitmissing"); data_stop = mean(diff_rt_Go(mice_num+1:end,:),2,"omitmissing");

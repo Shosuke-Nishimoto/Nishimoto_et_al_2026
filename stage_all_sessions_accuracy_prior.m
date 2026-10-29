@@ -42,7 +42,7 @@ for folder = 1:2
 end
 
 %%%%%%%%%%
-% 直前のtrial typeごとの正答率
+% Accuracy split by the preceding trial type
 accuracy = [mean(Go_accuracy_1,2) mean(Go_accuracy_2,2) mean(NoGo_accuracy_1,2) mean(NoGo_accuracy_2,2)];
 data_lick = accuracy(1:mice_num,:); data_stop = accuracy(mice_num+1:end,:);
 
@@ -73,7 +73,7 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% Go>No-GoとNo-Go>No-Goとで差があるか
+% Test whether Go>No-Go and No-Go>No-Go differ
 p_lick_Go = signrank(data_lick(:,1), data_lick(:,2))
 p_lick_NoGo = signrank(data_lick(:,3), data_lick(:,4))
 
@@ -112,13 +112,13 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% Go>No-GoとNo-Go>No-Goとで差があるか
+% Test whether Go>No-Go and No-Go>No-Go differ
 p_stop_Go = signrank(data_stop(:,1), data_stop(:,2))
 p_stop_NoGo = signrank(data_stop(:,3), data_stop(:,4))
 
 labels = {'current Go after Go','current Go after No-Go','current No-Go after Go','current No-Go after No-Go'};
 for i = 1:4
-    x = data_stop(:,i); % Stop のブロックでは data_stop(:,i)
+    x = data_stop(:,i); % In the Stop block, this is data_stop(:,i)
     x = x(~isnan(x));
     sem = std(x)/sqrt(numel(x)); d = max(0, 1 - floor(log10(sem)));
     fprintf('Stop %s  mean %.*f  standard error %.*f (n=%d)\n', labels{i}, d, mean(x), d, sem, numel(x));

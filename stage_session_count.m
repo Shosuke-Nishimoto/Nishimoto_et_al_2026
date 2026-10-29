@@ -26,7 +26,7 @@ stop_path = {"D:\Data\paper\Stop\S80"
 group_paths = {lick_path, stop_path};
 group_name = {'Lick', 'Stop'};
 
-% 進級基準を満たした翌日に、設定を変えず行った Stage 3。補足の Stage 3 からだけ外す。
+% Stage 3 session run on the day after the advancement criterion was met, without changing the settings. Exclude it only from the supplementary Stage 3 count.
 extra_stage3 = { ...
     'S76_Vis_Nishimoto_240903_Lick_OPT_Feb12_2025_Session1'
     'S97_Vis_Nishimoto_240903_Lick_OPT_May20_2025_Session2'
@@ -35,8 +35,8 @@ extra_found = false(size(extra_stage3));
 
 mouse_id = {};
 mouse_group = {};
-count_all = [];       % 余分な Stage 3 を含む
-count_stage3_pass = []; % Stage 3 は進級に要した本数（余分な 1 本を除く）
+count_all = [];       % includes the extra Stage 3 session
+count_stage3_pass = []; % Stage 3 is the number of sessions required to advance (the extra session excluded)
 
 for g = 1:2
     paths = group_paths{g};
@@ -68,7 +68,7 @@ for g = 1:2
         for j = 1:length(sortedfolderNames)
             matFile = fullfile(folderPath, sortedfolderNames{j}, 'Bpod_NI.mat');
             if ~isfile(matFile)
-                warning('Bpod_NI.mat がありません: %s', matFile);
+                warning('Bpod_NI.mat is missing: %s', matFile);
                 continue
             end
             S = load(matFile, 'TrueSide', 'Outcome', 'SelfInitiated');
@@ -80,7 +80,7 @@ for g = 1:2
             extra_idx = find(strcmp(sortedfolderNames{j}, extra_stage3), 1);
             if ~isempty(extra_idx) && stage == 3
                 extra_found(extra_idx) = true;
-                fprintf('余分な Stage 3 を補足の Stage 3 から外す: %s %s\n', ...
+                fprintf('Excluding extra Stage 3 from the supplementary Stage 3 count: %s %s\n', ...
                     this_mouse, sortedfolderNames{j});
             else
                 this_pass(stage) = this_pass(stage) + 1;
@@ -91,25 +91,25 @@ for g = 1:2
         mouse_group{end+1, 1} = group_name{g};
         count_all(end+1, :) = this_all;
         count_stage3_pass(end+1, :) = this_pass;
-        fprintf('%s %s Stage1–5 = %d %d %d %d %d    Stage3–5（余分な Stage 3 を含む）= %d\n', ...
+        fprintf('%s %s Stage1–5 = %d %d %d %d %d    Stage3–5 (including the extra Stage 3 session) = %d\n', ...
             group_name{g}, this_mouse, this_pass, sum(this_all(3:5)));
     end
 end
 
-fprintf('補足の Stage 3 から外したセッション: %d\n', sum(extra_found));
+fprintf('Sessions excluded from the supplementary Stage 3 count: %d\n', sum(extra_found));
 
 is_lick = strcmp(mouse_group, 'Lick');
 is_stop = strcmp(mouse_group, 'Stop');
 stage2 = count_all(:, 2);
 stage3to5 = sum(count_all(:, 3:5), 2);
 
-fprintf('\n主検定（補正なし）\n');
+fprintf('\nPrimary tests (uncorrected)\n');
 report_ranksum('Stage 2', stage2(is_lick), stage2(is_stop));
-report_ranksum('Stage 3–5（余分な Stage 3 を含む）', stage3to5(is_lick), stage3to5(is_stop));
+report_ranksum('Stage 3–5 (including the extra Stage 3 session)', stage3to5(is_lick), stage3to5(is_stop));
 
 %%%%%%%%%%
-% Supplementary: Stage 1–5 を 1 枚。各 Stage の左が Lick、右が Stop。
-% Stage のあいだは xline で区切る。Stage 3 は余分なセッションを除く。
+% Supplementary: Stages 1–5 in one figure. Within each Stage, Lick is on the left and Stop is on the right.
+% Separate Stages with xline. For Stage 3, exclude the extra session.
 figure('Position', [50 500 1500 500]);
 hold on;
 x_all = [];
@@ -143,11 +143,11 @@ set(gca, 'TickDir', 'out', 'LineWidth', 1.5)
 hold off;
 
 %%%%%%%%%%
-% Main: Stage 2 と Stage 3–5 を別 figure。
-% 累積で表示。横軸はセッション番号、縦軸は stages 3–5 を終えたマウス数。
+% Main: Stage 2 and Stages 3–5 in separate figures.
+% Cumulative plot. The x-axis is session number, and the y-axis is the number of mice that finished Stages 3–5.
 bin_width_stage2 = 10;
 x_limit_stage2 = 60;
-bin_width_stage3to5 = 15; % learning_curve_NoGo.m の edges = 0:15:90
+bin_width_stage3to5 = 15; % edges in learning_curve_NoGo.m are 0:15:90
 x_limit_stage3to5 = 90;
 
 c = [0.521, 0.086, 0.819; 0.231, 0.666, 0.196];

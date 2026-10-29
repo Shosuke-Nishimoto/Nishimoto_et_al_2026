@@ -19,7 +19,7 @@ for folder = 1:2
             load(list{k});   
             time_lick = 1*sampling_rate;
 
-            % 刺激提示後1s
+            % 1 s after stimulus onset
             num_lick = [];
 
             for i = 1:size(trial_start,2)

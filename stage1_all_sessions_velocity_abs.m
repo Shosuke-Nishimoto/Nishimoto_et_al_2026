@@ -12,13 +12,13 @@ Free_velocity = zeros(22,15,2);
 for mice = 1:length(list)/2
     for k = 2*mice-1:2*mice
         load(list{k});
-        % 刺激提示前1.05sから、刺激提示後1.95sまでの速度
+        % Velocity from 1.05 s before stimulus onset to 1.95 s after stimulus onset
         velocity_trial = zeros(size(trial_start,2), 3*sampling_rate);
         for i = 1:size(trial_start,2)
             velocity_trial(i,:) = direction(1,stim_onset(i)-1.05*sampling_rate+1:stim_onset(i)+1.95*sampling_rate);
         end
 
-        % Free trialのみ
+        % Free trials only
         vel_free = velocity_trial(TrueSide==0 & SelfInitiated==1 & Outcome==4,:);
         bin_width = 0.2*sampling_rate;
         num_bins = size(vel_free, 2) / bin_width;
@@ -57,8 +57,8 @@ hold off;
 end
 
 function cm = mean_bin_cm_per_s(seg, fs)
-% 試行ごとに cm/s にしてから平均する。direction を先に平均すると符号が消える。
-% ±1 は 1 エッジ、±2 は 2 エッジ、3 は +3。RPS = エッジ数 / 秒 / 1440。cm/s = RPS × 25。
+% Convert each trial to cm/s before averaging. Averaging direction first cancels the sign.
+% ±1 is 1 edge, ±2 is 2 edges, and 3 is +3. RPS = edge count / s / 1440. cm/s = RPS × 25.
 n_trial = size(seg,1);
 cm_trial = zeros(n_trial,1);
 for t = 1:n_trial

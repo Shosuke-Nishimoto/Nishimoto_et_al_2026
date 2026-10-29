@@ -174,7 +174,7 @@ duration_1 = [];
 duration_2 = [];
 
 for i = 1:length(path)
-    % ディレクトリの移動
+    % Change directory
     folderPath = path{i};
     cd(folderPath)
 

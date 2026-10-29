@@ -18,7 +18,7 @@ for folder = 1:2
     for mice = 1:length(list)/2
         for k = 2*mice-1:2*mice
             load(list{k});
-            % 全体
+            % All trials
             lick_plot = [];
             for i = 1:size(trial_start,2)
                 temp_lick = lick(lick>trial_start(i) & lick<trial_end(i));
@@ -27,12 +27,12 @@ for folder = 1:2
                 end
             end
 
-            % 各trialのrtを求める
+            % Reaction time of each trial
             lick_plot2 = lick_plot(lick_plot(:,2)>0,:);
             rt = zeros(1,size(trial_start,2));
             for i = 1:size(trial_start,2)
                 rt_ind = find(lick_plot2(:,1)==i,1);
-                rt(i) = min([lick_plot2(rt_ind,2),2*sampling_rate]); % 刺激提示後2s以内になめなかった場合は0.95sとする
+                rt(i) = min([lick_plot2(rt_ind,2),2*sampling_rate]); % If no lick occurred within 2 s after stimulus onset, set the time to 0.95 s
             end
             rt = rt/sampling_rate;
             
@@ -61,7 +61,7 @@ swarmchart(ones(length(NoGo_rt_lick),1),NoGo_rt_lick,2.5,c(2,:),'filled');
 ylim([-0.1 2.1]);
 xticks(1:2)
 yticks(0:2)
-view([90 -90]);  % xとyの役割を視覚的に入れ替える
+view([90 -90]);  % Visually swap the roles of x and y
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
@@ -77,7 +77,7 @@ swarmchart(ones(length(NoGo_rt_stop),1),NoGo_rt_stop,2.5,c(2,:),'filled');
 ylim([-0.1 2.1]);
 xticks(1:2)
 yticks(0:2)
-view([90 -90]);  % xとyの役割を視覚的に入れ替える
+view([90 -90]);  % Visually swap the roles of x and y
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;

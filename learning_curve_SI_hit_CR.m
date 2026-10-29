@@ -27,16 +27,16 @@ for i = 1:length(lick_path)
     folderPath = lick_path{i};
     [~, this_mouse] = fileparts(folderPath);
     cd(folderPath)
-    % フォルダ内の内容を取得
+    % List the contents of the folder
     files = dir(folderPath);
-    % フォルダのみを抽出（. と .. を除外）
+    % Keep folders only (exclude . and ..)
     isFolder = [files.isdir];
     folderNames = {files(isFolder).name};
     folderNames = folderNames(~ismember(folderNames, {'.', '..'}));
 
     dates = NaT(1,length(folderNames));
     sessions = zeros(1,length(folderNames));
-    % sortするため
+    % Used for sorting
     for j = 1:length(folderNames)
         fname = folderNames{j};
         % date
@@ -47,7 +47,7 @@ for i = 1:length(lick_path)
         sessions(j) = str2double(sessToken{1});
     end
 
-    %=== 日付 → Session番号 の順でソート ===%
+    %=== Sort by date, then by session number ===%
     [~, idx] = sortrows([datenum(dates)', sessions']);
     sortedfolderNames = folderNames(idx);
 
@@ -121,16 +121,16 @@ for i = 1:length(stop_path)
     folderPath = stop_path{i};
     [~, this_mouse] = fileparts(folderPath);
     cd(folderPath)
-    % フォルダ内の内容を取得
+    % List the contents of the folder
     files = dir(folderPath);
-    % フォルダのみを抽出（. と .. を除外）
+    % Keep folders only (exclude . and ..)
     isFolder = [files.isdir];
     folderNames = {files(isFolder).name};
     folderNames = folderNames(~ismember(folderNames, {'.', '..'}));
 
     dates = NaT(1,length(folderNames));
     sessions = zeros(1,length(folderNames));
-    % sortするため
+    % Used for sorting
     for j = 1:length(folderNames)
         fname = folderNames{j};
         % date
@@ -141,7 +141,7 @@ for i = 1:length(stop_path)
         sessions(j) = str2double(sessToken{1});
     end
 
-    %=== 日付 → Session番号の順でソート ===%
+    %=== Sort by date, then by session number ===%
     [~, idx] = sortrows([datenum(dates)', sessions']);
     sortedfolderNames = folderNames(idx);
 

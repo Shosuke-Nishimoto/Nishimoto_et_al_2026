@@ -1,5 +1,5 @@
 function raster_plot
-% 50ms程度ずれている可能性あり
+% The alignment may be off by about 50 ms
 
 path = {"D:\Data\paper\Lick_NoGo_first2\S112_NoGo_first1.mat",...
         "D:\Data\paper\Lick_last2\S112_last1.mat",...
@@ -8,7 +8,7 @@ path = {"D:\Data\paper\Lick_NoGo_first2\S112_NoGo_first1.mat",...
 
 for file = 1:length(path)
     load(path{file})
-    % 全体
+    % All trials
     lick_plot = [];
     for i = 1:size(trial_start,2)
         temp_lick = lick(lick>trial_start(i) & lick<trial_end(i));

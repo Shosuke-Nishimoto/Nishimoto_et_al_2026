@@ -14,10 +14,10 @@ for mice = 1:length(list)/2
     lick_hist = [];
     velocity_hist = [];
 
-    % 刺激前から刺激提示後まで
+    % From before stimulus onset through after stimulus onset
     for k = 2*mice-1:2*mice
         load(list{k});
-        % 刺激提示前1sから、刺激提示後2sまでのLick, Velocity
+        % Lick and velocity from 1 s before stimulus onset to 2 s after stimulus onset
         mean_vel_trial = zeros(size(trial_start,2), 1);
         lick_trial = zeros(size(trial_start,2), 1);
         velocity_trial = zeros(size(trial_start,2), 1);
@@ -31,7 +31,7 @@ for mice = 1:length(list)/2
             velocity_trial(i) = mean(temp_vel);
         end
 
-        % Free trialのみを解析に使用
+        % Use free trials only in the analysis
         lick_hist = [lick_hist; lick_trial(TrueSide==0 & SelfInitiated==1 & Outcome==4)];
         velocity_hist = [velocity_hist; velocity_trial(TrueSide==0 & SelfInitiated==1 & Outcome==4)/mean(mean_vel_trial,1)];
     end

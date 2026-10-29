@@ -17,12 +17,12 @@ for folder = 1:2
         for k = 2*mice-1:2*mice
             load(list{k});
             
-            % 最初の200 trial
+            % First 200 trials
             TrueSide_first = TrueSide(1:200); Outcome_first = Outcome(1:200); ChosenSide_first = ChosenSide(1:200); SelfInitiated_first = SelfInitiated(1:200);
-            % 最後の200 trial
+            % Last 200 trials
             TrueSide_last = TrueSide(end-199:end); Outcome_last = Outcome(end-199:end); ChosenSide_last = ChosenSide(end-199:end); SelfInitiated_last = SelfInitiated(end-199:end);
 
-            % 最初の200 trial
+            % First 200 trials
             Go_accuracy_first(mice_num+mice,k-2*mice+2)...
                 = sum(TrueSide_first==0 & Outcome_first==2 & SelfInitiated_first==1)/sum(TrueSide_first==0 & Outcome_first>=1 & Outcome_first<=2 & SelfInitiated_first==1);
             NoGo_accuracy_first(mice_num+mice,k-2*mice+2)...
@@ -33,7 +33,7 @@ for folder = 1:2
             f_rate = (sum(TrueSide_first==1 & Outcome_first==1 & SelfInitiated_first==1)+0.5)/(sum(TrueSide_first==1 & Outcome_first>=1 & Outcome_first<=3 & Outcome_first~=2 & SelfInitiated_first==1)+1);
             d_prime_first(mice_num+mice,k-2*mice+2) = norminv(h_rate) - norminv(f_rate);
 
-            % 最後の200 trial
+            % Last 200 trials
             Go_accuracy_last(mice_num+mice,k-2*mice+2)...
                 = sum(TrueSide_last==0 & Outcome_last==2 & SelfInitiated_last==1)/sum(TrueSide_last==0 & Outcome_last>=1 & Outcome_last<=2 & SelfInitiated_last==1);
             NoGo_accuracy_last(mice_num+mice,k-2*mice+2)...
@@ -51,7 +51,7 @@ for folder = 1:2
 end
 
 %%%%%%%%%%
-% 最初の200 trialと最後の200 trialの正答率
+% Accuracy for the first 200 trials and the last 200 trials
 accuracy = [mean(Go_accuracy_first,2) mean(Go_accuracy_last,2) mean(NoGo_accuracy_first,2) mean(NoGo_accuracy_last,2)];
 data_lick = accuracy(1:mice_num,:); data_stop = accuracy(mice_num+1:end,:);
 
@@ -82,7 +82,7 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% early No-Goとlate No-Goとで差があるか
+% Test whether early No-Go and late No-Go differ
 p_lick_Go = signrank(data_lick(:,1), data_lick(:,2))
 p_lick_NoGo = signrank(data_lick(:,3), data_lick(:,4))
 
@@ -121,7 +121,7 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% early No-Goとlate No-Goとで差があるか
+% Test whether early No-Go and late No-Go differ
 p_stop_Go = signrank(data_stop(:,1), data_stop(:,2))
 p_stop_NoGo = signrank(data_stop(:,3), data_stop(:,4))
 
@@ -134,7 +134,7 @@ for i = 1:4
 end
 
 %%%%%%%%%%
-% 最初の200 trialと最後の200 trialの正答率の差
+% Difference in accuracy between the first 200 trials and the last 200 trials
 diff_accuracy = Both_accuracy_last - Both_accuracy_first;
 data_lick = mean(diff_accuracy(1:mice_num,:),2); data_stop = mean(diff_accuracy(mice_num+1:end,:),2);
 

@@ -92,7 +92,7 @@ for folder = 1:2
 end
 
 %%%%%%%%%%
-% 直前のNo-Goの正誤ごとの正答率
+% Accuracy split by whether the preceding No-Go trial was correct or incorrect
 accuracy = [mean(Go_accuracy_3,2) mean(Go_accuracy_4,2) mean(NoGo_accuracy_3,2) mean(NoGo_accuracy_4,2)];
 data_lick = accuracy(1:mice_num,:); data_stop = accuracy(mice_num+1:end,:);
 
@@ -123,7 +123,7 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% nogo_correct_nogoとnogo_error_nogoとで差があるか
+% Test whether nogo_correct_nogo and nogo_error_nogo differ
 p_lick_Go = signrank(data_lick(:,1), data_lick(:,2))
 p_lick_NoGo = signrank(data_lick(:,3), data_lick(:,4))
 
@@ -162,7 +162,7 @@ ylim([0 1])
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
 hold off;
-% nogo_correct_nogoとnogo_error_nogoとで差があるか
+% Test whether nogo_correct_nogo and nogo_error_nogo differ
 p_stop_Go = signrank(data_stop(:,1), data_stop(:,2))
 p_stop_NoGo = signrank(data_stop(:,3), data_stop(:,4))
 

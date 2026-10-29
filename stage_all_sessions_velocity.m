@@ -17,7 +17,7 @@ for folder = 1:2
     for mice = 1:length(list)/2
         for k = 2*mice-1:2*mice
             load(list{k});
-            % 刺激提示前1.05sから、刺激提示後0.95sまでの速度
+            % Velocity from 1.05 s before stimulus onset to 0.95 s after stimulus onset
             mean_vel_trial = zeros(size(trial_start,2), 1);
             velocity_trial = zeros(size(trial_start,2), 2*sampling_rate);
             for i = 1:size(trial_start,2)
