@@ -214,6 +214,7 @@ xticks(0:25:ceil(max(session_number)/25)*25)
 yticks(yticks_use)
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
+add_mouse_colorbar(colors);
 hold off;
 end
 
@@ -232,12 +233,19 @@ for i = 1:n
     plot(data,'Color',c,'LineWidth',3);
     scatter(1:length(data),data,25,c,"filled");
 end
-xlim([0 ceil(max(session_number)/25)*25])
+x_max = max(session_number);
+if x_max <= 2
+    xlim([0.5 2.5])
+    xticks(1:2)
+else
+    xlim([0 ceil(x_max/25)*25])
+    xticks(0:25:ceil(x_max/25)*25)
+end
 ylim([0 1])
-xticks(0:25:ceil(max(session_number)/25)*25)
 yticks(yticks_use)
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
+add_mouse_colorbar(colors);
 hold off;
 end
 
@@ -259,4 +267,13 @@ elseif fN > 0.4 && fN < 0.6 && fF <= 0.05
 else
     stage = NaN;
 end
+end
+
+function add_mouse_colorbar(colors)
+n = size(colors, 1);
+colormap(flipud(colors));
+clim([0.5, n + 0.5]);
+cb = colorbar('Location', 'eastoutside');
+cb.Ticks = 1:n;
+cb.TickDirection = 'out';
 end

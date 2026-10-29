@@ -143,8 +143,8 @@ set(gca, 'TickDir', 'out', 'LineWidth', 1.5)
 hold off;
 
 %%%%%%%%%%
-% Main: Stage 2 と Stage 3–5 を別 figure。上側が Lick、下側が Stop。
-% ビン幅は figure ごとにここを変える。
+% Main: Stage 2 と Stage 3–5 を別 figure。
+% 累積で表示。横軸はセッション番号、縦軸は stages 3–5 を終えたマウス数。
 bin_width_stage2 = 10;
 x_limit_stage2 = 60;
 bin_width_stage3to5 = 15; % learning_curve_NoGo.m の edges = 0:15:90
@@ -155,26 +155,23 @@ bin_width = [bin_width_stage2, bin_width_stage3to5];
 x_limit = [x_limit_stage2, x_limit_stage3to5];
 values = {stage2, stage3to5};
 for p = 1:2
-    edges = 0:bin_width(p):x_limit(p);
-    if edges(end) < x_limit(p)
-        edges(end + 1) = edges(end) + bin_width(p);
-    end
-    figure('Position', [80 + 40 * p, 500, 500, 500]);
+    figure('Position', [50, 500, 500, 500]);
     hold on;
     lick_n = values{p}(is_lick);
     stop_n = values{p}(is_stop);
-    counts_lick = histcounts(lick_n, edges);
-    counts_stop = histcounts(stop_n, edges);
-    centers = edges(1:end-1) + diff(edges) / 2;
-    bar(centers, counts_lick, 'FaceColor', c(1, :), 'EdgeColor', 'k', 'LineWidth', 1.5);
-    bar(centers, -counts_stop, 'FaceColor', c(2, :), 'EdgeColor', 'k', 'LineWidth', 1.5);
-    yline(0, 'k', 'LineWidth', 1);
+
+    session_x = 0:x_limit(p);
+    n_done_lick = zeros(1, length(session_x));
+    n_done_stop = zeros(1, length(session_x));
+    for s = 1:length(session_x)
+        n_done_lick(s) = sum(lick_n <= session_x(s));
+        n_done_stop(s) = sum(stop_n <= session_x(s));
+    end
+    stairs(session_x, n_done_lick, 'Color', c(1, :), 'LineWidth', 3);
+    stairs(session_x, n_done_stop, 'Color', c(2, :), 'LineWidth', 3);
     xlim([0 x_limit(p)])
-    peak = max([counts_lick, counts_stop, 1]);
-    ylim([-peak, peak])
-    yticks_use = -12:ceil((peak-1) / 2):12;
-    yticks(yticks_use)
-    yticklabels(abs(yticks_use))
+    ylim([0 max(numel(lick_n), numel(stop_n))])
+    yticks(0:2:max(numel(lick_n), numel(stop_n)))
     xticks(0:(x_limit(p) / 3):x_limit(p))
     box off;
     set(gca, 'XGrid','off','YGrid','on','TickDir', 'out', 'LineWidth', 1.5)

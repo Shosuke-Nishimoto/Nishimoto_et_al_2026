@@ -175,6 +175,7 @@ ylim([-0.5 4])
 yticks(0:4)
 box off;
 set(gca,'TickDir','out','LineWidth',1.5)
+add_mouse_colorbar(colors);
 hold off;
 end
 
@@ -196,4 +197,13 @@ elseif fN > 0.4 && fN < 0.6 && fF <= 0.05
 else
     stage = NaN;
 end
+end
+
+function add_mouse_colorbar(colors)
+n = size(colors, 1);
+colormap(flipud(colors));
+clim([0.5, n + 0.5]);
+cb = colorbar('Location', 'eastoutside');
+cb.Ticks = 1:n;
+cb.TickDirection = 'out';
 end
